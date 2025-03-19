@@ -27,18 +27,37 @@ app.listen(2222, () => {
 app.get("/",( req, res) => {
     const sql ="SELECT * FROM ``";
     db.query(sql, (err,result) => {
-        if (err) return res.status(500).json({error: err.message});
-        res.json(result);
+        if (err) {
+            console.error("SQL Hiba:", err);
+            return res.status(500).json({ error: "Adatbázis lekérdezési hiba!" });
+        }
+        return res.json(result);
     });
 });
 
 // 1. feladat
 app.get('/versenyekszamok', (req, res) => {
-    const query = "SELECT versenyzoNev FROM versenyekszamok WHERE eredmeny > 60";
-    db.query(query, (err, result) => {
-        if (err) return res.status(500).json({error: err.message});
-        res.json(result);
+    const sql = "SELECT versenyzoNev FROM versenyekszamok WHERE eredmeny > 60";
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error("SQL Hiba:", err);
+            return res.status(500).json({ error: "Adatbázis lekérdezési hiba!" });
+        }
+        return res.json(result);
     });
 });
 
+// 2. feladat
+app.post('/uj_nemzet', (req, res) => {
+    const {nemzet} = req.body;
+    const sql = 'INSERT INTO nemzetek (Nemzet) VALUES (?)';
+    connection.query(sql, [nemzet], (err, result) => {
+      if (err) {
+        console.error('Hiba a nemzet felvitelénél: ', err);
+        return res.status(500).json({ error: "Adatbázis lekérdezési hiba!" });
+      }
+      res.send(`Sikeresen felvettük a(z) ${nemzet} nemzetet!`);
+      return res.json(result);
+    });
+});
 
