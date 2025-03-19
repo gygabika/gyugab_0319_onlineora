@@ -53,10 +53,10 @@ app.post("/uj_nemzet", (req, res) => {
     const sql = "INSERT INTO nemzetek (Nemzet) VALUES (?)";
     connection.query(sql, [nemzet], (err, result) => {
       if (err) {
-        console.error('Hiba a nemzet felvitelénél: ', err);
+        console.error("Hiba a nemzet felvitelénél: ", err);
         return res.status(500).json({ error: "Adatbázis lekérdezési hiba!" });
       }
-      res.send(`Sikeresen felvettük a(z) ${nemzet} nemzetet!`);
+      res.send("Sikeresen felvettük a(z) ${nemzet} nemzetet!");
       return res.json(result);
     });
 });
@@ -67,10 +67,10 @@ app.delete("/nemzet_torles", (req, res) => {
     const sql = "DELETE FROM nemzetek WHERE Nemzet = ?;";
     connection.query(sql, [nemzet], (err, result) => {
       if (err) {
-        console.error('Hiba a nemzet törlésénél: ', err);
+        console.error("Hiba a nemzet törlésénél: ", err);
         return res.status(500).json({ error: "Adatbázis lekérdezési hiba!" });
       }
-      res.send(`Sikeresen töröltük a(z) ${nemzet} nemzetet!`);
+      res.send("Sikeresen töröltük a(z) ${nemzet} nemzetet!");
       return res.json(result);
     });
 });
@@ -81,10 +81,10 @@ app.put("/eredmeny_modositas", (req, res) => {
     const sql = "UPDATE versenyekszamok SET Eredmeny = ? WHERE NemzetKod = (SELECT NemzetId FROM nemzetek WHERE Nemzet = ?) AND VersenyzoNev = ?;";
     connection.query(sql, [ujEredmeny, nemzet, versenyzoNev], (err, result) => {
       if (err) {
-        console.error('Hiba az eredmény módosításánál: ', err);
+        console.error("Hiba az eredmény módosításánál: ", err);
         return res.status(500).json({ error: "Adatbázis lekérdezési hiba!" });
       }
-      res.send(`Sikeresen módosítottuk ${versenyzoNev} eredményét a(z) ${nemzet} nemzetnél!`);
+      res.send("Sikeresen módosítottuk ${versenyzoNev} eredményét a(z) ${nemzet} nemzetnél!");
       return res.json(result);
     });
 });
