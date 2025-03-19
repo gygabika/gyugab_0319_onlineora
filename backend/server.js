@@ -23,3 +23,22 @@ app.get("/", (req,rest) => {
 app.listen(2222, () => {
     console.log("A szerveren a 2222 porton fut!")
 });
+
+app.get("/",( req, res) => {
+    const sql ="SELECT * FROM ``";
+    db.query(sql, (err,result) => {
+        if (err) return res.status(500).json({error: err.message});
+        res.json(result);
+    });
+});
+
+// 1. feladat
+app.get('/versenyekszamok', (req, res) => {
+    const query = "SELECT versenyzoNev FROM versenyekszamok WHERE eredmeny > 60";
+    db.query(query, (err, result) => {
+        if (err) return res.status(500).json({error: err.message});
+        res.json(result);
+    });
+});
+
+
