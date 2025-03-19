@@ -36,8 +36,8 @@ app.get("/",( req, res) => {
 });
 
 // 1. feladat
-app.get('/versenyekszamok', (req, res) => {
-    const sql = "SELECT versenyzoNev FROM versenyekszamok WHERE eredmeny > 60";
+app.get("/versenyekszamok", (req, res) => {
+    const sql = "SELECT DISTINCT Versenyszam FROM versenyekszamok WHERE Versenyszam IN ('20 km gyaloglás', '50 km gyaloglás', 'maraton');";
     db.query(sql, (err, result) => {
         if (err) {
             console.error("SQL Hiba:", err);
@@ -48,7 +48,7 @@ app.get('/versenyekszamok', (req, res) => {
 });
 
 // 2. feladat
-app.post('/uj_nemzet', (req, res) => {
+app.post("/uj_nemzet", (req, res) => {
     const {nemzet} = req.body;
     const sql = "INSERT INTO nemzetek (Nemzet) VALUES (?)";
     connection.query(sql, [nemzet], (err, result) => {
@@ -62,7 +62,7 @@ app.post('/uj_nemzet', (req, res) => {
 });
 
 // 3. feladat
-app.delete('/nemzet_torles', (req, res) => {
+app.delete("/nemzet_torles", (req, res) => {
     const {nemzet} = req.body;
     const sql = "DELETE FROM nemzetek WHERE Nemzet = ?;";
     connection.query(sql, [nemzet], (err, result) => {
@@ -71,6 +71,20 @@ app.delete('/nemzet_torles', (req, res) => {
         return res.status(500).json({ error: "Adatbázis lekérdezési hiba!" });
       }
       res.send(`Sikeresen töröltük a(z) ${nemzet} nemzetet!`);
+      return res.json(result);
+    });
+});
+
+// 4. feladat
+app.put("/eredmeny_modositas", (req, res) => {
+    const {nemzet, versenyzoNev, ujEredmeny} = req.body;
+    const sql = "UPDATE versenyekszamok SET Eredmeny = ? WHERE NemzetKod = (SELECT NemzetId FROM nemzetek WHERE Nemzet = ?) AND VersenyzoNev = ?;";
+    connection.query(sql, [ujEredmeny, nemzet, versenyzoNev], (err, result) => {
+      if (err) {
+        console.error('Hiba az eredmény módosításánál: ', err);
+        return res.status(500).json({ error: "Adatbázis lekérdezési hiba!" });
+      }
+      res.send(`Sikeresen módosítottuk ${versenyzoNev} eredményét a(z) ${nemzet} nemzetnél!`);
       return res.json(result);
     });
 });
